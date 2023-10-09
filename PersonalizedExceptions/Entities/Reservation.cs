@@ -1,3 +1,5 @@
+using PersonalizedExceptions.Entities.Exceptions;
+
 namespace PersonalizedExceptions.Entities;
 
 public class Reservation
@@ -13,6 +15,10 @@ public class Reservation
 
     public Reservation(int roomNumber, DateTime checkIn, DateTime checkOut)
     {
+        if (checkOut <= checkIn)
+        {
+            throw new DomainException("Check-Out date must be after Check-In date.");
+        }
         RoomNumber = roomNumber;
         CheckIn = checkIn;
         CheckOut = checkOut;
@@ -24,20 +30,19 @@ public class Reservation
         return (int)duration.TotalDays;
     }
 
-    public string UpdateDates(DateTime checkIn, DateTime checkOut)
+    public void UpdateDates(DateTime checkIn, DateTime checkOut)
     {
         DateTime now = DateTime.Now;
         if (checkIn < now || checkOut < now)
         {
-            return "Error in reservation: The reservation dates to update must be future dates.";
+            throw new DomainException("Reservation dates to update must be future dates.");
         }
         if (checkOut <= checkIn)
         {
-            return "Error: Check-Out date must be after Check-In date.";
+            throw new DomainException("Check-Out date must be after Check-In date.");
         }
         CheckIn = checkIn;
         CheckOut = checkOut;
-        return null;
     }
 
     public override string ToString()
@@ -46,7 +51,7 @@ public class Reservation
                + RoomNumber
                + ", check-in: "
                + CheckIn.ToString("dd/MM/yyyy")
-               + ", Check-out: "
+               + ", check-out: "
                + CheckOut.ToString("dd/MM/yyyy")
                + ", "
                + Duration()
