@@ -24,19 +24,29 @@ public class Reservation
         return (int)duration.TotalDays;
     }
 
-    public void UpdateDates(DateTime checkIn, DateTime checkOut)
+    public string UpdateDates(DateTime checkIn, DateTime checkOut)
     {
+        DateTime now = DateTime.Now;
+        if (checkIn < now || checkOut < now)
+        {
+            return "Error in reservation: The reservation dates to update must be future dates.";
+        }
+        if (checkOut <= checkIn)
+        {
+            return "Error: Check-Out date must be after Check-In date.";
+        }
         CheckIn = checkIn;
         CheckOut = checkOut;
+        return null;
     }
 
     public override string ToString()
     {
-        return "Room number"
+        return "Room "
                + RoomNumber
                + ", check-in: "
                + CheckIn.ToString("dd/MM/yyyy")
-               + "Check-out: "
+               + ", Check-out: "
                + CheckOut.ToString("dd/MM/yyyy")
                + ", "
                + Duration()
